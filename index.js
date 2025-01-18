@@ -3,7 +3,7 @@ const express = require('express');
 const cors = require('cors');
 // const jwt = require('jsonwebtoken');
 // const cookieParser = require('cookie-parser');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 // const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
@@ -30,12 +30,31 @@ async function run() {
 
     const database = client.db("studyAllianceDB");
     const sessionCollection = database.collection("session");
+    const notesCollection = database.collection("notes");
 
     app.get('/session',async(req,res)=>{
       const result = await sessionCollection.find().toArray()
       res.send(result);
     })
 
+     app.get('/session/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await sessionCollection.findOne(query);
+      res.send(result);
+    })
+
+
+    app.post('/notes',async(req,res)=>{
+      const note = req.body;
+      const result = await notesCollection.insertOne(note)
+      res.send(result)
+    })
+
+    app.get('/notes',async(req,res)=>{
+      const result = await notesCollection.find().toArray()
+      res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
