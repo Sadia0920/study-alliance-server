@@ -30,6 +30,7 @@ async function run() {
 
     const database = client.db("studyAllianceDB");
     const sessionCollection = database.collection("session");
+    const bookedSessionCollection = database.collection("bookedSession");
     const notesCollection = database.collection("notes");
 
     app.get('/session',async(req,res)=>{
@@ -44,7 +45,14 @@ async function run() {
       res.send(result);
     })
 
+    // bookedSession
+    app.post('/bookedSession',async(req,res)=>{
+      const booked = req.body;
+      const result = await bookedSessionCollection.insertOne(booked)
+      res.send(result)
+    })
 
+    // notes
     app.post('/notes',async(req,res)=>{
       const note = req.body;
       const result = await notesCollection.insertOne(note)
