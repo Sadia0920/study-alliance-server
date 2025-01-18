@@ -64,10 +64,12 @@ async function run() {
       res.send(result)
     })
 
-    // app.get('/notes',async(req,res)=>{
-    //   const result = await notesCollection.find().toArray()
-    //   res.send(result);
-    // })
+    app.get('/notes/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await notesCollection.findOne(query);
+      res.send(result);
+    })
 
     app.get('/notes',async(req,res)=>{
       const email = req.query.email;
@@ -76,6 +78,27 @@ async function run() {
       res.send(result);
     })
 
+    app.put('/notes/:id',async(req,res)=>{
+      const id = req.params.id;
+      const newNote = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true}
+      const updateNote = {
+        $set: {
+          title: newNote.title,
+          description: newNote.description,
+        }
+      }
+      const result = await notesCollection.updateOne(filter,updateNote,options)
+      res.send(result)
+    })
+
+    app.delete('/notes/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await notesCollection.deleteOne(query);
+      res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
