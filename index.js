@@ -46,6 +46,11 @@ async function run() {
     })
 
     // bookedSession
+    app.get('/bookedSession',async(req,res)=>{
+      const result = await bookedSessionCollection.find().toArray();
+      res.send(result);
+    })
+
     app.post('/bookedSession',async(req,res)=>{
       const booked = req.body;
       const result = await bookedSessionCollection.insertOne(booked)
@@ -59,10 +64,19 @@ async function run() {
       res.send(result)
     })
 
+    // app.get('/notes',async(req,res)=>{
+    //   const result = await notesCollection.find().toArray()
+    //   res.send(result);
+    // })
+
     app.get('/notes',async(req,res)=>{
-      const result = await notesCollection.find().toArray()
+      const email = req.query.email;
+      const query = {email: email};
+      const result = await notesCollection.find(query).toArray()
       res.send(result);
     })
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
