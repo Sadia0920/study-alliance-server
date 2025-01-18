@@ -46,8 +46,15 @@ async function run() {
     })
 
     // bookedSession
+    // app.get('/bookedSession',async(req,res)=>{
+    //   const result = await bookedSessionCollection.find().toArray();
+    //   res.send(result);
+    // })
+
     app.get('/bookedSession',async(req,res)=>{
-      const result = await bookedSessionCollection.find().toArray();
+      const email = req.query.email;
+      const query = {email: email};
+      const result = await bookedSessionCollection.find(query).toArray()
       res.send(result);
     })
 
