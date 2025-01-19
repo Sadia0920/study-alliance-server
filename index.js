@@ -58,6 +58,13 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/bookedSession/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await bookedSessionCollection.findOne(query);
+      res.send(result);
+    })
+
     app.post('/bookedSession',async(req,res)=>{
       const booked = req.body;
       const result = await bookedSessionCollection.insertOne(booked)
