@@ -32,7 +32,9 @@ async function run() {
     const sessionCollection = database.collection("session");
     const bookedSessionCollection = database.collection("bookedSession");
     const notesCollection = database.collection("notes");
+    const reviewsCollection = database.collection("reviews");
 
+    // session
     app.get('/session',async(req,res)=>{
       const result = await sessionCollection.find().toArray()
       res.send(result);
@@ -46,6 +48,7 @@ async function run() {
     })
 
     // bookedSession
+
     // app.get('/bookedSession',async(req,res)=>{
     //   const result = await bookedSessionCollection.find().toArray();
     //   res.send(result);
@@ -68,6 +71,13 @@ async function run() {
     app.post('/bookedSession',async(req,res)=>{
       const booked = req.body;
       const result = await bookedSessionCollection.insertOne(booked)
+      res.send(result)
+    })
+
+    // reviews
+    app.post('/reviews',async(req,res)=>{
+      const review = req.body;
+      const result = await reviewsCollection.insertOne(review)
       res.send(result)
     })
 
