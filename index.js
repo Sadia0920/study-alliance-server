@@ -47,6 +47,12 @@ async function run() {
       res.send(result);
     })
 
+    app.post('/session',async(req,res)=>{
+      const session = req.body;
+      const result = await sessionCollection.insertOne(session)
+      res.send(result)
+    })
+
     // bookedSession
 
     // app.get('/bookedSession',async(req,res)=>{
