@@ -47,10 +47,17 @@ async function run() {
       res.send(result);
     })
 
+    app.get('/sessions',async(req,res)=>{
+      const email = req.query.email;
+      const query = {tutorEmail: email};
+      const result = await sessionCollection.find(query).toArray()
+      res.send(result);
+    })
+
     app.post('/session',async(req,res)=>{
-      const session = req.body;
-      const result = await sessionCollection.insertOne(session)
-      res.send(result)
+      const data = req.body;
+      const result = await sessionCollection.insertOne(data);
+      res.send(result);
     })
 
     // bookedSession
