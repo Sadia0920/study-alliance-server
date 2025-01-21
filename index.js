@@ -56,6 +56,30 @@ async function run() {
       const result = await materialsCollection.insertOne(data);
       res.send(result);
     })
+
+    app.put('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const newMaterial = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true}
+      const updateMaterial = {
+        $set: {
+          title: newMaterial.title,
+          image: newMaterial.image,
+          link: newMaterial.link
+        }
+      }
+      const result = await materialsCollection.updateOne(filter,updateMaterial,options)
+      res.send(result)
+    })
+
+    app.delete('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await materialsCollection.deleteOne(query);
+      res.send(result);
+    })
+
     
     // session
     app.get('/session',async(req,res)=>{
