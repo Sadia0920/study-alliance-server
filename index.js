@@ -33,7 +33,16 @@ async function run() {
     const bookedSessionCollection = database.collection("bookedSession");
     const notesCollection = database.collection("notes");
     const reviewsCollection = database.collection("reviews");
+    const materialsCollection = database.collection("materials");
 
+
+    //materials
+    app.post('/materials',async(req,res)=>{
+      const data = req.body;
+      const result = await materialsCollection.insertOne(data);
+      res.send(result);
+    })
+    
     // session
     app.get('/session',async(req,res)=>{
       const result = await sessionCollection.find().toArray()
