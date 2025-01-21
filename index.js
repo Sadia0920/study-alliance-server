@@ -37,6 +37,20 @@ async function run() {
 
 
     //materials
+    app.get('/materials',async(req,res)=>{
+      const email = req.query.email;
+      const query = {tutorEmail: email};
+      const result = await materialsCollection.find(query).toArray()
+      res.send(result);
+    })
+
+    app.get('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await materialsCollection.findOne(query);
+      res.send(result);
+    })
+
     app.post('/materials',async(req,res)=>{
       const data = req.body;
       const result = await materialsCollection.insertOne(data);
