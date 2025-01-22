@@ -34,59 +34,23 @@ async function run() {
     const notesCollection = database.collection("notes");
     const reviewsCollection = database.collection("reviews");
     const materialsCollection = database.collection("materials");
+    const usersCollection = database.collection("users");
 
+    // users
 
-    //materials
-    app.get('/material',async(req,res)=>{
-      const result = await materialsCollection.find().toArray()
+    app.get('/users',async(req,res)=>{
+      const result = await usersCollection.find().toArray()
       res.send(result);
     })
 
-    app.get('/materials',async(req,res)=>{
-      const email = req.query.email;
-      const query = {tutorEmail: email};
-      const result = await materialsCollection.find(query).toArray()
+    app.post('/users',async(req,res)=>{
+      const user = req.body;
+      const result = await usersCollection.insertOne(user);
       res.send(result);
     })
-
-    app.get('/materials/:id',async(req,res)=>{
-      const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
-      const result = await materialsCollection.findOne(query);
-      res.send(result);
-    })
-
-    app.post('/materials',async(req,res)=>{
-      const data = req.body;
-      const result = await materialsCollection.insertOne(data);
-      res.send(result);
-    })
-
-    app.put('/materials/:id',async(req,res)=>{
-      const id = req.params.id;
-      const newMaterial = req.body;
-      const filter = {_id: new ObjectId(id)};
-      const options = {upsert: true}
-      const updateMaterial = {
-        $set: {
-          title: newMaterial.title,
-          image: newMaterial.image,
-          link: newMaterial.link
-        }
-      }
-      const result = await materialsCollection.updateOne(filter,updateMaterial,options)
-      res.send(result)
-    })
-
-    app.delete('/materials/:id',async(req,res)=>{
-      const id = req.params.id;
-      const query = {_id: new ObjectId(id)};
-      const result = await materialsCollection.deleteOne(query);
-      res.send(result);
-    })
-
     
     // session
+
     app.get('/session',async(req,res)=>{
       const result = await sessionCollection.find().toArray()
       res.send(result);
@@ -147,11 +111,6 @@ async function run() {
     })
 
     // notes
-    app.post('/notes',async(req,res)=>{
-      const note = req.body;
-      const result = await notesCollection.insertOne(note)
-      res.send(result)
-    })
 
     app.get('/notes/:id',async(req,res)=>{
       const id = req.params.id;
@@ -165,6 +124,12 @@ async function run() {
       const query = {email: email};
       const result = await notesCollection.find(query).toArray()
       res.send(result);
+    })
+
+    app.post('/notes',async(req,res)=>{
+      const note = req.body;
+      const result = await notesCollection.insertOne(note)
+      res.send(result)
     })
 
     app.put('/notes/:id',async(req,res)=>{
@@ -186,6 +151,56 @@ async function run() {
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await notesCollection.deleteOne(query);
+      res.send(result);
+    })
+
+    //materials
+
+    app.get('/material',async(req,res)=>{
+      const result = await materialsCollection.find().toArray()
+      res.send(result);
+    })
+
+    app.get('/materials',async(req,res)=>{
+      const email = req.query.email;
+      const query = {tutorEmail: email};
+      const result = await materialsCollection.find(query).toArray()
+      res.send(result);
+    })
+
+    app.get('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await materialsCollection.findOne(query);
+      res.send(result);
+    })
+
+    app.post('/materials',async(req,res)=>{
+      const data = req.body;
+      const result = await materialsCollection.insertOne(data);
+      res.send(result);
+    })
+
+    app.put('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const newMaterial = req.body;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true}
+      const updateMaterial = {
+        $set: {
+          title: newMaterial.title,
+          image: newMaterial.image,
+          link: newMaterial.link
+        }
+      }
+      const result = await materialsCollection.updateOne(filter,updateMaterial,options)
+      res.send(result)
+    })
+
+    app.delete('/materials/:id',async(req,res)=>{
+      const id = req.params.id;
+      const query = {_id: new ObjectId(id)};
+      const result = await materialsCollection.deleteOne(query);
       res.send(result);
     })
 
