@@ -37,6 +37,11 @@ async function run() {
 
 
     //materials
+    app.get('/material',async(req,res)=>{
+      const result = await materialsCollection.find().toArray()
+      res.send(result);
+    })
+
     app.get('/materials',async(req,res)=>{
       const email = req.query.email;
       const query = {tutorEmail: email};
