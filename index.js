@@ -43,8 +43,48 @@ async function run() {
       res.send(result);
     })
 
+    app.patch('/users/tutor/:id',async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          role:'tutor'
+        }
+      }
+      const result = await usersCollection.updateOne(filter,updatedDoc)
+      res.send(result);
+    })
+
+    app.patch('/users/student/:id',async(req,res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const updatedDoc = {
+        $set: {
+          role:'student'
+        }
+      }
+      const result = await usersCollection.updateOne(filter,updatedDoc)
+      res.send(result);
+    })
+
+    // app.get('/users', async(req,res)=>{
+    //   const {searchParams} = req.query;
+    //   let option = {};
+    //   if(searchParams){
+    //   option = {email: {$regex: searchParams, $options:"i"}}
+    //   }
+    //   const cursor = usersCollection.find(option);
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // })
+
     app.post('/users',async(req,res)=>{
       const user = req.body;
+      const query = {email: user.email}
+      const existingUser = await usersCollection.findOne(query);
+      if(existingUser){
+        return res.send({message: 'user already exists',insertedId: null})
+      }
       const result = await usersCollection.insertOne(user);
       res.send(result);
     })
