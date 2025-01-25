@@ -1,10 +1,10 @@
 require('dotenv').config()
 const express = require('express');
 const cors = require('cors');
-// const jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
+// var token = jwt.sign({ foo: 'bar' }, 'shhhhh');
 // const cookieParser = require('cookie-parser');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
-// const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express()
 const port = process.env.PORT || 5000;
 
@@ -36,9 +36,32 @@ async function run() {
     const materialsCollection = database.collection("materials");
     const usersCollection = database.collection("users");
 
-    // users
+    // JWT
+    app.post('/jwt',async(req, res)=>{
+      const user = req.body
+      const token = jwt.sign(user,process.env.ACCESS_TOKEN_SECRET,{expiresIn: '6h'})
+      res.send({token});
+    })
 
-    app.get('/users',async(req,res)=>{
+    //Middlewares
+    const verifyToken = (req,res,next)=>{
+      // console.log('inside verify token', req.headers.authorization);
+      if(!req.headers.authorization){
+        return res.status(401).send({message: 'forbidden access'});
+      }
+      const token = req.headers.authorization.split(' ')[1];
+      jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, decoded)=> {
+      if(err){
+        return res.status(401).send({message: 'forbidden access'});
+      }
+      req.decoded = decoded;
+      next();
+      });
+    }
+
+    // users
+    app.get('/users', verifyToken ,async(req,res)=>{
+      //console.log(req.headers);
       const result = await usersCollection.find().toArray()
       res.send(result);
     })
