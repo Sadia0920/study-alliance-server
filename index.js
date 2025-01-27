@@ -77,7 +77,7 @@ async function run() {
       res.send(result);
     })
 
-    app.get('/users/admin/:email', verifyToken,verifyAdmin, async(req,res)=>{
+    app.get('/users/admin/:email', verifyToken, async(req,res)=>{
       const email = req.params.email;
       if(email !== req.decoded.email){
         return res.status(403).send({message: "forbidden access"})
@@ -172,7 +172,7 @@ async function run() {
       res.send(result);
     })
 
-    app.post('/session',async(req,res)=>{
+    app.post('/session',verifyToken,async(req,res)=>{
       const data = req.body;
       const result = await sessionCollection.insertOne(data);
       res.send(result);
@@ -187,7 +187,7 @@ async function run() {
 
     app.get('/bookedSession',async(req,res)=>{
       const email = req.query.email;
-      const query = {email: email};
+      const query = {studentEmail: email};
       const result = await bookedSessionCollection.find(query).toArray()
       res.send(result);
     })
@@ -199,13 +199,18 @@ async function run() {
       res.send(result);
     })
 
-    app.post('/bookedSession',async(req,res)=>{
+    app.post('/bookedSession',verifyToken,async(req,res)=>{
       const booked = req.body;
       const result = await bookedSessionCollection.insertOne(booked)
       res.send(result)
     })
 
     // reviews
+     app.get('/reviews',async(req,res)=>{
+      const result = await reviewsCollection.find().toArray();
+      res.send(result);
+    })
+
     app.post('/reviews',async(req,res)=>{
       const review = req.body;
       const result = await reviewsCollection.insertOne(review)
@@ -228,13 +233,13 @@ async function run() {
       res.send(result);
     })
 
-    app.post('/notes',async(req,res)=>{
+    app.post('/notes',verifyToken,async(req,res)=>{
       const note = req.body;
       const result = await notesCollection.insertOne(note)
       res.send(result)
     })
 
-    app.put('/notes/:id',async(req,res)=>{
+    app.put('/notes/:id',verifyToken,async(req,res)=>{
       const id = req.params.id;
       const newNote = req.body;
       const filter = {_id: new ObjectId(id)};
@@ -249,7 +254,7 @@ async function run() {
       res.send(result)
     })
 
-    app.delete('/notes/:id',async(req,res)=>{
+    app.delete('/notes/:id',verifyToken,async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await notesCollection.deleteOne(query);
@@ -283,7 +288,7 @@ async function run() {
       res.send(result);
     })
 
-    app.put('/materials/:id',async(req,res)=>{
+    app.put('/materials/:id',verifyToken,async(req,res)=>{
       const id = req.params.id;
       const newMaterial = req.body;
       const filter = {_id: new ObjectId(id)};
@@ -299,7 +304,7 @@ async function run() {
       res.send(result)
     })
 
-    app.delete('/materials/:id',async(req,res)=>{
+    app.delete('/materials/:id',verifyToken,async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
       const result = await materialsCollection.deleteOne(query);
